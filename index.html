@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Am I Cooked? 🔥</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: white;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 850px;
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        body.dark .container {
+            background: #1f2937;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #777;
+        }
+
+        body.dark .subtitle {
+            color: #ccc;
+        }
+
+        .theme {
+            float: right;
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        .form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .check {
+            background: #ff5e62;
+            color: white;
+        }
+
+        .reset {
+            background: #ddd;
+            color: #222;
+        }
+
+        .result {
+            display: none;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 20px;
+            background: #f7f7f7;
+            text-align: center;
+        }
+
+        body.dark .result {
+            background: #111827;
+        }
+
+        .emoji {
+            font-size: 70px;
+        }
+
+        .status {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 10px;
+        }
+
+        .meter {
+            width: 100%;
+            height: 25px;
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: #ff5e62;
+            transition: width 1s;
+        }
+
+        .score {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .tips {
+            text-align: left;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,94,98,0.1);
+            border-radius: 15px;
+        }
+
+        .advice {
+            font-size: 18px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .countdown {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #888;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        @media(max-width: 650px) {
+            .form {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="theme" onclick="toggleDarkMode()">🌙</div>
+
+    <header>
+        <h1>🔥 Am I Cooked?</h1>
+        <p class="subtitle">
+            The world's most unnecessary exam survival calculator 😂
+        </p>
+    </header>
+
+    <div class="form">
+
+        <div>
+            <label>👤 Your Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+        </div>
+
+        <div>
+            <label>📚 Subject</label>
+            <input type="text" id="subject" placeholder="e.g. DBMS">
+        </div>
+
+        <div>
+            <label>⏰ Study Hours</label>
+            <input type="number" id="hours" min="0" placeholder="Hours studied">
+        </div>
+
+        <div>
+            <label>😴 Sleep Hours</label>
+            <input type="number" id="sleep" min="0" max="24" placeholder="Hours slept">
+        </div>
+
+        <div>
+            <label>📈 Preparation %</label>
+            <input type="number" id="prep" min="0" max="100" placeholder="0 - 100">
+        </div>
+
+        <div>
+            <label>🎯 Exam Difficulty</label>
+
+            <select id="difficulty">
+                <option value="easy">Easy 😊</option>
+                <option value="medium">Medium 😐</option>
+                <option value="hard">Hard 💀</option>
+                <option value="impossible">Impossible ☠️</option>
+            </select>
+        </div>
+
+    </div>
+
+    <button class="check" onclick="checkFate()">
+        🔥 CHECK MY FATE
+    </button>
+
+    <div class="result" id="result">
+
+        <div class="emoji" id="emoji">🔥</div>
+
+        <div class="status" id="status"></div>
+
+        <div class="score" id="score"></div>
+
+        <div class="meter">
+            <div class="bar" id="bar"></div>
+        </div>
+
+        <p id="message"></p>
+
+        <div class="advice" id="advice"></div>
+
+        <div class="tips">
+            <h3>🧠 Survival Tips</h3>
+            <ul id="tips"></ul>
+        </div>
+
+        <div class="countdown" id="countdown"></div>
+
+        <button class="reset" onclick="resetGame()">
+            🔄 Try Again
+        </button>
+
+    </div>
+
+    <footer>
+        Made for students who start studying one night before the exam 💀
+    </footer>
+
+</div>
+
+
+<script>
+
+function checkFate() {
+
+    let name = document.getElementById("name").value || "Student";
+    let subject = document.getElementById("subject").value || "your subject";
+
+    let hours = Number(document.getElementById("hours").value);
+    let sleep = Number(document.getElementById("sleep").value);
+    let prep = Number(document.getElementById("prep").value);
+
+    let difficulty = document.getElementById("difficulty").value;
+
+    let cooked = 100 - prep;
+
+    // Difficulty increases cooking level
+    if (difficulty === "medium") cooked += 5;
+    if (difficulty === "hard") cooked += 15;
+    if (difficulty === "impossible") cooked += 25;
+
+    // Study hours reduce cooking
+    if (hours >= 8) cooked -= 20;
+    else if (hours >= 5) cooked -= 10;
+    else if (hours >= 3) cooked -= 5;
+
+    // Lack of sleep increases cooking
+    if (sleep < 5) cooked += 10;
+
+    cooked = Math.max(0, Math.min(100, cooked));
+
+    let status = "";
+    let emoji = "";
+    let message = "";
+
+    if (cooked >= 80) {
+
+        status = "FULLY COOKED 💀";
+        emoji = "💀";
+        message = name + ", " + subject +
+            " is not an exam anymore. It's a survival mission.";
+
+    } 
+    else if (cooked >= 60) {
+
+        status = "EXTRA CRISPY 🔥";
+        emoji = "🔥";
+        message = "Bro... you should probably open your notes.";
+
+    } 
+    else if (cooked >= 40) {
+
+        status = "HALF COOKED 😭";
+        emoji = "😭";
+        message = "There is still hope. But don't waste time.";
+
+    } 
+    else if (cooked >= 20) {
+
+        status = "ALMOST SAFE 😎";
+        emoji = "😎";
+        message = "You're doing alright. One more revision.";
+
+    } 
+    else {
+
+        status = "UNCHEATABLE 🗿";
+        emoji = "🗿";
+        message = "You are prepared. The exam should be scared of you.";
+
+    }
+
+    let adviceList = [
+
+        "📱 Stop scrolling and study!",
+        "☕ Coffee has entered the chat.",
+        "📖 Open your notes. PLEASE.",
+        "🧘 Stay calm. Panic is not a study technique.",
+        "💀 Your syllabus is waiting for you.",
+        "🔥 One more revision. You got this!",
+        "😂 Even ChatGPT can't save you if you don't study.",
+        "🗿 Become the topper you were supposed to be."
+    ];
+
+    let advice =
+        adviceList[Math.floor(Math.random() * adviceList.length)];
+
+
+    let tips = [
+        "Revise important topics first.",
+        "Practice previous questions.",
+        "Keep your phone away.",
+        "Take short breaks.",
+        "Sleep properly before the exam."
+    ];
+
+    document.getElementById("emoji").innerText = emoji;
+
+    document.getElementById("status").innerText = status;
+
+    document.getElementById("score").innerText =
+        "🔥 Cooking Level: " + Math.round(cooked) + "%";
+
+    document.getElementById("message").innerText = message;
+
+    document.getElementById("advice").innerText = advice;
+
+    document.getElementById("bar").style.width = cooked + "%";
+
+    let tipHTML = "";
+
+    tips.forEach(function(tip) {
+        tipHTML += "<li>" + tip + "</li>";
+    });
+
+    document.getElementById("tips").innerHTML = tipHTML;
+
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("countdown").innerText =
+        "⏱️ Result generated at " + new Date().toLocaleTimeString();
+
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+    });
+}
+
+
+function resetGame() {
+
+    document.getElementById("name").value = "";
+    document.getElementById("subject").value = "";
+    document.getElementById("hours").value = "";
+    document.getElementById("sleep").value = "";
+    document.getElementById("prep").value = "";
+
+    document.getElementById("result").style.display = "none";
+
+}
+
+
+function toggleDarkMode() {
+
+    document.body.classList.toggle("dark");
+
+}
+
+</script>
+
+</body>
+</html>
